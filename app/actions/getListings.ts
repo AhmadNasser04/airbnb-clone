@@ -11,7 +11,7 @@ export interface IListingParams {
   category?: string;
 }
 
-export default async function getListings(params?: IListingParams) {
+export default async function getListings(params: IListingParams) {
   try {
     const {
       userId,
@@ -22,7 +22,7 @@ export default async function getListings(params?: IListingParams) {
       endDate,
       locationValue,
       category,
-    } = params || {};
+    } = params;
 
     let query: any = {};
 
