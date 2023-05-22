@@ -1,12 +1,11 @@
 "use client";
 
 import { Avatar } from "@/app/components";
-import { useMemo } from "react";
 import { SafeUser } from "@/app/types";
 import { IconType } from "react-icons";
 import ListingCategory from "./ListingCategory";
 import useCountries from "@/app/hooks/useCountries";
-import dynamic from "next/dynamic";
+import { Map } from "@/app/components";
 
 interface ListingInfoProps {
   user: SafeUser;
@@ -36,15 +35,6 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
   const { getByValue } = useCountries();
 
   const coordinates = getByValue(locationValue)?.latlng;
-
-  const Map = useMemo(
-    () =>
-      dynamic(() => import("@/app/components/Map"), {
-        ssr: false,
-      }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [location]
-  );
 
   return (
     <div className="flex flex-col col-span-4 gap-8">

@@ -1,13 +1,13 @@
 "use client";
 
-import { formatISO, setDate } from "date-fns";
+import { formatISO } from "date-fns";
 import { Calendar, Counter, Heading } from "@/app/components";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import CountrySelect, { CountrySelectValue } from "../inputs/CountrySelect";
+import { Map } from "@/app/components";
 import { Range } from "react-date-range";
 import useSearchModal from "@/app/hooks/useSearchModal";
-import dynamic from "next/dynamic";
 import Modal from "./Modal";
 import qs from "query-string";
 
@@ -27,20 +27,19 @@ const SearchModal = () => {
   const [guestCount, setGuestCount] = useState(1);
   const [roomCount, setRoomCount] = useState(1);
   const [bathroomCount, setBathroomCount] = useState(1);
+  const [mapRefresher, setMapRefresher] = useState(false);
   const [dateRange, setDateRange] = useState<Range>({
     startDate: new Date(),
     endDate: new Date(),
     key: "selection",
   });
 
-  const Map = useMemo(
-    () =>
-      dynamic(() => import("@/app/components/Map"), {
-        ssr: false,
-      }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [location]
-  );
+  useEffect(() => {
+    setMapRefresher(true);
+    setTimeout(() => {
+      setMapRefresher(false);
+    }, 1);
+  }, [location]);
 
   const onBack = useCallback(() => {
     setStep((prev) => prev - 1);
@@ -129,7 +128,7 @@ const SearchModal = () => {
         onChange={(value) => setLocation(value as CountrySelectValue)}
       />
       <hr />
-      <Map center={location?.latlng} />
+      {!mapRefresher && <Map center={location?.latlng} />}
     </div>
   );
 

@@ -2,7 +2,7 @@
 
 import { Heading } from "../";
 import { categories } from "../navbar/Categories";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   CategoryInput,
   CountrySelect,
@@ -13,8 +13,8 @@ import {
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Modal from "./Modal";
 import useRentModal from "@/app/hooks/useRentModal";
-import dynamic from "next/dynamic";
 import axios from "axios";
+import { Map } from "@/app/components";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
@@ -32,6 +32,7 @@ const RentModal = () => {
   const rentModal = useRentModal();
   const [step, setSteps] = useState(STEPS.CATEGORY);
   const [isLoading, setIsLoading] = useState(false);
+  const [mapRefresher, setMapRefresher] = useState(false);
   const {
     register,
     handleSubmit,
@@ -60,11 +61,12 @@ const RentModal = () => {
   const bathroomCount = watch("bathroomCount");
   const imageSrc = watch("imageSrc");
 
-  const Map = useMemo(
-    () => dynamic(() => import("../Map"), { ssr: false }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [location]
-  );
+  useEffect(() => {
+    setMapRefresher(true);
+    setTimeout(() => {
+      setMapRefresher(false);
+    }, 1);
+  }, [location]);
 
   const setCustomValue = (id: string, value: any) => {
     setValue(id, value, {
@@ -154,7 +156,9 @@ const RentModal = () => {
         {categories.map((item) => (
           <div key={item.label} className="col-span-1">
             <CategoryInput
-              onClick={(category) => setCustomValue("category", category)}
+              onClick={(category) => {
+                setCustomValue("category", category);
+              }}
               selected={category === item.label}
               label={item.label}
               icon={item.icon}
@@ -176,7 +180,7 @@ const RentModal = () => {
           onChange={(value) => setCustomValue("location", value)}
           value={location}
         />
-        <Map center={location?.latlng} />
+        {!mapRefresher && <Map center={location?.latlng} />}
       </div>
     );
   }

@@ -20,10 +20,6 @@ interface MapProps {
   center?: number[];
 }
 
-const url = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-const attribution =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
-
 const Map: React.FC<MapProps> = ({ center }) => {
   return (
     <MapContainer
@@ -32,7 +28,12 @@ const Map: React.FC<MapProps> = ({ center }) => {
       scrollWheelZoom={false}
       className="h-[35vh] rounded-lg"
     >
-      <TileLayer url={url} attribution={attribution} />
+      <TileLayer
+        url={"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"}
+        attribution={
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }
+      />
       {center && <Marker position={center as L.LatLngExpression} />}
     </MapContainer>
   );
